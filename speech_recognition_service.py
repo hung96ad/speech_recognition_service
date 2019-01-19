@@ -35,18 +35,19 @@ def not_found(error):
     return make_response(jsonify({'error': 'Resource no found.'}), 404)
 
 def speech_recognition(audio):
-    r = sr.Recognizer()
     file_name = str(uuid.uuid1())
     command = 'mkdir %s %s/audio_split'%(file_name, file_name)
     subprocess.call(command, shell=True)
     with open('%s/audio.wav'%file_name, 'wb') as f: 
         f.write(audio) 
-    command = "ffmpeg -i %s/audio.wav -f segment -segment_time 60 -c copy %s/audio_split/%03d.wav"%(file_name,file_name)
+    command = "ffmpeg -i %s/audio.wav -f segment -segment_time 120 -c copy %s/audio_split/%s003d.wav"%(file_name,file_name,'%')
     subprocess.call(command, shell=True)
-    audio_path = '%s/audio_split'%file_name
+    audio_path = '%s/audio_split/'%file_name
     results = ""
-    for id_path in os.listdir(audio_path):
-        result = speech_recognition_by_path(audio_path + '/' + id_path)
+    list_audio = os.listdir(audio_path)
+    list_audio.sort()
+    for id_path in list_audio:
+        result = speech_recognition_by_path(audio_path + id_path)
         if len(result) > 0:
             results += " " + result
     command = 'rm -rf %s'%file_name
@@ -54,14 +55,14 @@ def speech_recognition(audio):
     return results
 
 def speech_recognition_by_path(path):
+    r = sr.Recognizer()
     audio_base = sr.AudioFile(path)
     with audio_base as source:
-        audio = r.record(source, duration=60)
+        audio = r.record(source, duration=120)
     try:
         return r.recognize_google(audio)
-    except Exception as identifier:
-        logging.error('An error has occurred whilst processing the file: "{0}"'.format(err))
+    except:
         return ""
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8084)
+    app.run(debug=True, host='0.0.0.0', port=8090)
