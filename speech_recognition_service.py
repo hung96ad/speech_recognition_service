@@ -40,7 +40,7 @@ def speech_recognition(audio):
     subprocess.call(command, shell=True)
     with open('%s/audio.wav'%file_name, 'wb') as f: 
         f.write(audio) 
-    command = "ffmpeg -i %s/audio.wav -acodec pcm_s16le -ac 1 -ar 16000 %s/out.wav"%(file_name,file_name,'%')
+    command = "ffmpeg -i %s/audio.wav -acodec pcm_s16le -ac 1 -ar 16000 %s/out.wav"%(file_name,file_name)
     subprocess.call(command, shell=True)
     command = "ffmpeg -i %s/out.wav -f segment -segment_time 120 -c copy %s/audio_split/%s003d.wav"%(file_name,file_name,'%')
     subprocess.call(command, shell=True)
