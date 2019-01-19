@@ -3,6 +3,9 @@ import logging
 from json import loads
 from base64 import b64decode
 import speech_recognition as sr
+import subprocess
+import uuid
+import os
 
 app = Flask(__name__)
 
@@ -33,16 +36,30 @@ def not_found(error):
 
 def speech_recognition(audio):
     r = sr.Recognizer()
-    with open('audio.wav', 'wb') as f: 
+    file_name = str(uuid.uuid1())
+    command = 'mkdir %s %s/audio_split'%(file_name, file_name)
+    subprocess.call(command, shell=True)
+    with open('%s/audio.wav'%file_name, 'wb') as f: 
         f.write(audio) 
-    audio_base = sr.AudioFile('audio.wav')
+    command = "ffmpeg -i %s/audio.wav -f segment -segment_time 60 -c copy %s/audio_split/%03d.wav"%(file_name,file_name)
+    subprocess.call(command, shell=True)
+    audio_path = '%s/audio_split'%file_name
+    results = ""
+    for id_path in os.listdir(audio_path):
+        result = speech_recognition_by_path(audio_path + '/' + id_path)
+        if len(result) > 0:
+            results += " " + result
+    return results
+
+def speech_recognition_by_path(path):
+    audio_base = sr.AudioFile('path')
     with audio_base as source:
         audio = r.record(source, duration=60)
     try:
         return r.recognize_google(audio)
     except Exception as identifier:
         logging.error('An error has occurred whilst processing the file: "{0}"'.format(err))
-        return '<<Cannot recognition>>'
+        return ""
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8084)

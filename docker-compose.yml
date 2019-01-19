@@ -3,4 +3,4 @@ services:
   speech_recognition:
     build: .
     ports:
-     - "8086:8084"
+     - "8090:8084"
