@@ -49,10 +49,12 @@ def speech_recognition(audio):
         result = speech_recognition_by_path(audio_path + '/' + id_path)
         if len(result) > 0:
             results += " " + result
+    command = 'rm -rf %s'%file_name
+    subprocess.call(command, shell=True)
     return results
 
 def speech_recognition_by_path(path):
-    audio_base = sr.AudioFile('path')
+    audio_base = sr.AudioFile(path)
     with audio_base as source:
         audio = r.record(source, duration=60)
     try:
