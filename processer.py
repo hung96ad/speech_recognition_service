@@ -17,7 +17,7 @@ def speech_recognition(audio):
     subprocess.call(command, shell=True)
     return results
 
-def split_audio():
+def split_audio(audio):
     file_name = str(uuid.uuid1())
     command = 'mkdir %s %s/audio_split'%(file_name, file_name)
     subprocess.call(command, shell=True)
