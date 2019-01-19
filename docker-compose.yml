@@ -1,0 +1,6 @@
+version: '2'
+services:
+  speech_recognition:
+    build: .
+    ports:
+     - "8086:8084"
