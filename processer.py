@@ -5,14 +5,14 @@ import os
 
 def speech_recognition(audio):
     results = ""
-    audio_path, file_name = split_audio()
+    audio_path, file_name = split_audio(audio)
     list_audio = os.listdir(audio_path)
     list_audio.sort()
     for id_path in list_audio:
         result = speech_recognition_by_path(audio_path + id_path)
         if len(result) > 0:
             results += " " + result
-        print(id_path)
+        print("processer: " + id_path)
     command = 'rm -rf %s'%file_name
     subprocess.call(command, shell=True)
     return results
