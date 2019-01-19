@@ -18,7 +18,7 @@ def upload():
         data = loads(data)
         audio_base = b64decode(data['audio'])
         result = speech_recognition(audio_base)
-        if len(result):
+        if len(result) == 0:
             result = "<<Cannot Recognition>>" 
         return make_response(jsonify(result), 200)
     except Exception as err:
